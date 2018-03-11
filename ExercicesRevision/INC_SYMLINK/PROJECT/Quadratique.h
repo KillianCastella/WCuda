@@ -1,0 +1,1 @@
+/home/arc12/CUDA/toStudent/code/WCuda/ExercicesRevision//src/Exercices/ex1/Quadratique.h

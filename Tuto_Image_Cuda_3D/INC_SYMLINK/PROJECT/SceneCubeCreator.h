@@ -1,0 +1,1 @@
+/home/bilat/CBI/CoursCuda/toStudent/code/WCuda/Tuto_Image_Cuda_3D/src/cpp/core/scene/SceneCubeCreator.h

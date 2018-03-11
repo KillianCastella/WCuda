@@ -1,0 +1,1 @@
+/home/arc12/CUDA/toStudent/code/WCuda/ExercicesRevision//src/cpp/core/02_derivate/deriver/HeureMinuteSeconde.h
