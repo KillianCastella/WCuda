@@ -16,7 +16,6 @@ Animable_I<uchar4>* MandelbrotProvider::createAnimable()
     DomaineMath domaineMath = DomaineMath(-2.1,-1.3,0.8,1.3);
     // Animation;
     float dt = 2 ;
-    int n=50;
 
     // Dimension
     int w = 16 * 60;
@@ -31,7 +30,7 @@ Animable_I<uchar4>* MandelbrotProvider::createAnimable()
 
     Grid grid(dg,db);
 
-    return new Mandelbrot(grid,w, h,n,domaineMath,dt);
+    return new Mandelbrot(grid,w, h,domaineMath,dt);
     }
 
 Image_I* MandelbrotProvider::createImageGL(void)

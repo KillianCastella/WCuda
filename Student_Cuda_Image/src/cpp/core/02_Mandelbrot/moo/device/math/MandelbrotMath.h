@@ -83,7 +83,7 @@ class MandelbrotMath
 		b = 2 * aCopy * b + y;
 		i++;
 		}
-	    return i;
+	    return (1/t) * i;
 
 	    }
     private:

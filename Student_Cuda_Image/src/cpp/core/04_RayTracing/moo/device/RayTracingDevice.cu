@@ -28,7 +28,7 @@ __constant__ Sphere TAB_CM[NB_SPHERE];
  \*-------------------------------------*/
 
 __global__ void rayTracing(uchar4* ptrDevPixels, uint w, uint h, float t);
-
+__global__ void rayTracing(uchar4* ptrDevPixels, uint w, uint h, float t, Sphere* ptrDevTabSphere);
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
@@ -41,10 +41,20 @@ __global__ void rayTracing(uchar4* ptrDevPixels, uint w, uint h, float t);
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void rayTracing(uchar4* ptrDevPixels, uint w, uint h, float t)
+__device__ void copyGMtoSM(Sphere* ptrTabSM, Sphere* ptrTabGM, int n)
     {
-    RayTracingMath rayTracingMath = RayTracingMath(w, h, NB_SPHERE, TAB_CM);
-
+    const int TID_LOCAL = Indice2D::tidLocal();
+    const int NB_THREAD_LOCAL = Indice2D::nbThreadLocal();
+    int s = TID_LOCAL;
+    while (s < n)
+	{
+	ptrTabSM[s] = ptrTabGM[s];
+	s += NB_THREAD_LOCAL;
+	}
+    }
+__device__ void work(uchar4* ptrDevPixels, uint w, uint h, float t, Sphere* ptrDevTabSphere)
+    {
+    RayTracingMath rayTracingMath = RayTracingMath(w, h, NB_SPHERE, ptrDevTabSphere);
     const int WH = w * h;
     const int TID = Indice2D::tid();
     const int NB_THREAD = Indice2D::nbThread();
@@ -62,12 +72,27 @@ __global__ void rayTracing(uchar4* ptrDevPixels, uint w, uint h, float t)
 	s += NB_THREAD;
 	}
     }
+__global__ void rayTracing(uchar4* ptrDevPixels, uint w, uint h, float t)
+    {
+    work(ptrDevPixels, w, h, t, TAB_CM);
+    }
+__global__ void rayTracing(uchar4* ptrDevPixels, uint w, uint h, float t, Sphere* ptrDevTabSphere)
+    {
+    __shared__  extern Sphere
+    TAB_SM[];
+    copyGMtoSM(TAB_SM, ptrDevTabSphere, NB_SPHERE);
+
+    __syncthreads();
+    work(ptrDevPixels, w, h, t, TAB_SM);
+
+    }
 __host__ void uploadToCM(Sphere* ptrTabSphere)
     {
     size_t size = NB_SPHERE * sizeof(Sphere);
     int offset = 0;
     HANDLE_ERROR(cudaMemcpyToSymbol(TAB_CM, ptrTabSphere, size, offset, cudaMemcpyHostToDevice));
     }
+
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/

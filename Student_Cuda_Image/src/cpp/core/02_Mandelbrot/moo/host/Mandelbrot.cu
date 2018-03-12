@@ -38,11 +38,9 @@ extern __global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t,Do
  |*	Constructeur	    *|
  \*-------------------------*/
 
-Mandelbrot::Mandelbrot(const Grid& grid, uint w, uint h,int n, const DomaineMath& domaineMath, float dt) :
-	Animable_I<uchar4>(grid, w, h, "Mandelbrot_Cuda_RGBA_uchar4",domaineMath), variateurAnimation(Interval<int>(30,100),dt)
+Mandelbrot::Mandelbrot(const Grid& grid, uint w, uint h, const DomaineMath& domaineMath, float dt) :
+	Animable_I<uchar4>(grid, w, h, "Mandelbrot_Cuda_RGBA_uchar4",domaineMath), variateurAnimation(Interval<int>(20,120),dt)
     {
-	//inputs
-	this->n=n;
 	// Tools
 	this->t = 0; // protected dans Animable
     }

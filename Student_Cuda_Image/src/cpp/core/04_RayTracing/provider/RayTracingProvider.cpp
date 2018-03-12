@@ -13,7 +13,7 @@
 Animable_I<uchar4>* RayTracingProvider::createAnimable()
     {
     // Animation;
-    float dt = 2 ;
+    float dt = 0.01 ;
 
     // Dimension
     int w = 16 * 60;

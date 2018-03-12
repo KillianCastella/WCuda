@@ -23,7 +23,7 @@ class Mandelbrot: public Animable_I<uchar4>
 
     public:
 
-	Mandelbrot(const Grid& grid, uint w, uint h,int n,const DomaineMath& domaineMath,float dt);
+	Mandelbrot(const Grid& grid, uint w, uint h,const DomaineMath& domaineMath,float dt);
 	virtual ~Mandelbrot(void);
 
 	/*--------------------------------------*\
@@ -55,8 +55,6 @@ class Mandelbrot: public Animable_I<uchar4>
 	|*		Methodes		*|
 	\*-------------------------------------*/
 
-	// Inputs
-	int n;
 
 	//tools
 	Variateur<int> variateurAnimation;
