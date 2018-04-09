@@ -1,9 +1,8 @@
-#include <iostream>
-#include <stdlib.h>
+#include "Indice2D.h"
+#include "Indice1D.h"
+#include "cudaTools.h"
 
-
-using std::cout;
-using std::endl;
+#include <stdio.h>
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
@@ -13,21 +12,15 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern bool useHello(void);
-extern bool useAddVecteur(void);
-extern bool useSlice(void);
-
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore();
+__global__ void slice(float* ptrDevTab, int n);
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
@@ -37,25 +30,34 @@ int mainCore();
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore()
+
+__device__ double fpi(double x)
     {
-    bool isOk = true;
-    //isOk &= useHello();
-    //isOk &= useAddVecteur();
-    isOk &= useSlice();
-
-    cout << "\nisOK = " << isOk << endl;
-    cout << "\nEnd : mainCore" << endl;
-
-    return isOk ? EXIT_SUCCESS : EXIT_FAILURE;
+    return 4 / (1 + x * x);
     }
+
+__global__ void slice(float* ptrDevTab, int n)
+    {
+    const int NB_THREAD = Indice2D::nbThread();
+    const int TID = Indice2D::tid();
+	{
+	const double DX = 1 / (double) n;
+	double xs;
+	int s = TID;
+	while (s < n)
+	    {
+	    xs = s * DX;
+	    ptrDevTab[s] = fpi(xs);
+	    s += NB_THREAD;
+	    }
+	}
+    }
+
+
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
-
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
  \*---------------------------------------------------------------------*/

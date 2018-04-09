@@ -1,6 +1,7 @@
 #include <iostream>
-#include <stdlib.h>
-
+#include "VectorTools.h"
+#include "Grid.h"
+#include "Device.h"
 
 using std::cout;
 using std::endl;
@@ -13,21 +14,17 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern bool useHello(void);
-extern bool useAddVecteur(void);
-extern bool useSlice(void);
+#include "Slice.h"
 
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore();
+bool useSlice(void);
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
@@ -37,24 +34,35 @@ int mainCore();
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore()
+bool useSlice()
     {
-    bool isOk = true;
-    //isOk &= useHello();
-    //isOk &= useAddVecteur();
-    isOk &= useSlice();
+    int n = 1000;
 
-    cout << "\nisOK = " << isOk << endl;
-    cout << "\nEnd : mainCore" << endl;
+    // Partie interessante GPGPU
+	{
+	// Grid cuda
+	int mp = Device::getMPCount();
+	int coreMP = Device::getCoreCountMP();
 
-    return isOk ? EXIT_SUCCESS : EXIT_FAILURE;
+	//entrelacement
+	dim3 dg = dim3(mp, 2, 1);  		// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
+	dim3 db = dim3(coreMP, 2, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
+	Grid grid(dg, db);
+
+	//1à1
+//	dim3 dg = dim3(mp, 3, 1);  		// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
+//	dim3 db = dim3(coreMP, 3, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
+//	Grid grid(dg, db);
+
+	Slice slice(grid, n); // on passse la grille à AddVector pour pouvoir facilement la faire varier de l'extérieur (ici) pour trouver l'optimum
+	slice.run();
+	}
+
     }
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
