@@ -60,7 +60,7 @@ class RipplingMath
 	    float result;
 	    dij(i,j,&result); // warning : dij return void. Ne peut pas etre "imbriquer dans une fonction"
 
-	    result=result/10;
+	    result=result/10.f;
 	    *ptrLevelGris = 38 + 217*(cos(result-t/7))/(result+1);
 	    }
 

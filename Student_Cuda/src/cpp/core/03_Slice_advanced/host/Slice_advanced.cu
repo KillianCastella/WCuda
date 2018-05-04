@@ -1,7 +1,8 @@
+#include "Slice_advanced.h"
+
 #include <iostream>
 
 #include "Device.h"
-#include "Slice.h"
 
 using std::cout;
 using std::endl;
@@ -14,7 +15,7 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern __global__ void slice(float* ptrTabDev,int n);
+extern __global__ void slice_advanced(float* ptrTabDev,int n);
 
 /*--------------------------------------*\
  |*		Public			*|
@@ -32,30 +33,31 @@ extern __global__ void slice(float* ptrTabDev,int n);
  |*		Constructeur			*|
  \*-------------------------------------*/
 
-Slice::Slice(const Grid& grid, int n) :
-	n(n),pi(0)
+Slice_advanced::Slice_advanced(const Grid& grid, int n) :
+	n(n)
     {
     // Grid
 	{
 	this->dg = grid.dg;
 	this->db = grid.db;
 	}
-    this->nbThread = grid.threadCounts();
-    this->sizeOctet = nbThread * sizeof(float); // octet
+this->nbThread = grid.threadCounts();
+this->sizeOctet = nbThread * sizeof(float); // octet
     // MM
 	{
-	std::cout <<"|"<< sizeOctet<<"|";
+
 	// MM (malloc Device)
 	    {
 	    Device::malloc(&ptrTabDev, sizeOctet);
 	    }
-	ptrTab = new float[nbThread];
+	ptrTab= new float[nbThread];
 	Device::lastCudaError("AddVector MM (end allocation)"); // temp debug, facultatif
 	}
 
+
     }
 
-Slice::~Slice(void)
+Slice_advanced::~Slice_advanced(void)
     {
     //MM (device free)
 	{
@@ -69,10 +71,10 @@ Slice::~Slice(void)
  |*		Methode			*|
  \*-------------------------------------*/
 
-float Slice::run()
+void Slice_advanced::run()
     {
     Device::lastCudaError("slice(before)"); // temp debug
-    slice<<<dg,db>>>(ptrTabDev, n); // assynchrone
+    slice_advanced<<<dg,db>>>(ptrTabDev, n); // assynchrone
     Device::lastCudaError("slice (after)"); // temp debug
 
     //Device::synchronize(); // Temp,debug, only for printf in  GPU
@@ -81,13 +83,13 @@ float Slice::run()
 	{
 	Device::memcpyDToH(ptrTab, ptrTabDev, sizeOctet); // barriere synchronisation implicite
 	}
-    for (int i = 0; i < nbThread; i++)
-	{
-	pi += ptrTab[i];
+	double pi=0;
+	for(int i=0;i<nbThread;i++){
+	    pi += ptrTab[i];
 	}
-    pi = pi / (float) n;
-    std::cout << pi;
-    return pi;
+	pi = pi / (double) n;
+	std::cout<<pi;
+	//TODO OpenMp reduction
     }
 
 /*--------------------------------------*\

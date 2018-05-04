@@ -1,10 +1,8 @@
-#include <iostream>
-#include "VectorTools.h"
-#include "Grid.h"
-#include "Device.h"
+#include "Indice2D.h"
+#include "Indice1D.h"
+#include "cudaTools.h"
 
-using std::cout;
-using std::endl;
+#include <stdio.h>
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
@@ -14,13 +12,11 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-#include "Slice.h"
-
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-bool useSlice(void);
+__global__ void slice_advanced(float* ptrDevTab, int n);
 
 /*--------------------------------------*\
  |*		Private			*|
@@ -34,37 +30,34 @@ bool useSlice(void);
  |*		Public			*|
  \*-------------------------------------*/
 
-bool useSlice()
+
+__device__ double fpi2(double x)
     {
-    int n = 1000;
-
-    // Partie interessante GPGPU
-	{
-	// Grid cuda
-	int mp = Device::getMPCount();
-	int coreMP = Device::getCoreCountMP();
-
-	//entrelacement
-	dim3 dg = dim3(mp, 2, 1);  		// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
-	dim3 db = dim3(coreMP, 2, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
-	Grid grid(dg, db);
-
-	//1à1
-//	dim3 dg = dim3(mp, 3, 1);  		// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
-//	dim3 db = dim3(coreMP, 3, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
-//	Grid grid(dg, db);
-
-	Slice slice(grid, n); // on passse la grille à AddVector pour pouvoir facilement la faire varier de l'extérieur (ici) pour trouver l'optimum
-	slice.run();
-
-	}
-
+    return 4 / (1 + x * x);
     }
+
+__global__ void slice_advanced(float* ptrDevTab, int n)
+    {
+    const int NB_THREAD = Indice2D::nbThread();
+    const int TID = Indice2D::tid();
+	{
+	const double DX = 1 / (double) n;
+	double xs;
+	int s = TID;
+	while (s < n)
+	    {
+	    xs = s * DX;
+	    ptrDevTab[s] = fpi2(xs);
+	    s += NB_THREAD;
+	    }
+	}
+    }
+
+
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
  \*---------------------------------------------------------------------*/

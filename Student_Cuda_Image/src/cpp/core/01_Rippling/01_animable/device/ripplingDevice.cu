@@ -45,10 +45,15 @@ __global__ void rippling(uchar4* ptrDevPixels, uint w, uint h, float t)
     const int TID = Indice2D::tid();
     const int NB_THREAD = Indice2D::nbThread();
     const int WH = w * h;
-
-    {
-
-    }
+    int s = TID;
+    int i;
+    int j;
+    while (s < WH)
+	{
+	IndiceTools::toIJ(s, w, &i, &j);
+	ripplingMath.colorIJ(&ptrDevPixels[s], i, j, t);
+	s += NB_THREAD;
+	}
     }
 
 /*--------------------------------------*\

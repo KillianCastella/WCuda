@@ -1,4 +1,4 @@
-#include "MandelbrotProvider.h"
+#include "MandelbrotProvider3.h"
 
 #include "Mandelbrot.h"
 
@@ -11,9 +11,9 @@
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
-Animable_I<uchar4>* MandelbrotProvider::createAnimable()
+Animable_I<uchar4>* MandelbrotProvider3::createAnimable()
     {
-    DomaineMath domaineMath = DomaineMath(-2.1,-1.3,0.8,1.3);
+    DomaineMath domaineMath = DomaineMath(-1.92,-1.69,-0.1,0.1);
     // Animation;
     float dt = 2 ;
 
@@ -33,13 +33,12 @@ Animable_I<uchar4>* MandelbrotProvider::createAnimable()
     return new Mandelbrot(grid,w, h,domaineMath,dt);
     }
 
-Image_I* MandelbrotProvider::createImageGL(void)
+Image_I* MandelbrotProvider3::createImageGL(void)
     {
     ColorRGB_01 colorTexte(1, 0, 0); // Green
     return new ImageAnimable_RGBA_uchar4(createAnimable(), colorTexte);
     }
-/*-------------------------------------*\
- |*		Private	-----------------*\
+/*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
 

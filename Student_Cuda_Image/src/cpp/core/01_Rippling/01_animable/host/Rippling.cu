@@ -69,7 +69,7 @@ void Rippling::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath& 
     {
     Device::lastCudaError("rippling rgba uchar4 (before kernel)"); // facultatif, for debug only, remove for release
 
-    //rippling<<<dg,db>>>(ptrDevV1, ptrDevV2, ptrDevW, n);
+    rippling<<<dg,db>>>(ptrDevPixels,w,h,t);
 
     Device::lastCudaError("rippling rgba uchar4 (after kernel)"); // facultatif, for debug only, remove for release
     }

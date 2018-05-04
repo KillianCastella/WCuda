@@ -16,6 +16,7 @@ using std::endl;
 extern bool useHello(void);
 extern bool useAddVecteur(void);
 extern bool useSlice(void);
+extern bool useSlice_advanced(void);
 
 /*--------------------------------------*\
  |*		Public			*|
@@ -43,6 +44,7 @@ int mainCore()
     //isOk &= useHello();
     //isOk &= useAddVecteur();
     isOk &= useSlice();
+    //isOk &= useSlice_advanced();
 
     cout << "\nisOK = " << isOk << endl;
     cout << "\nEnd : mainCore" << endl;

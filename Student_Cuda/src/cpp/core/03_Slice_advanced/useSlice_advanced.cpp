@@ -14,13 +14,13 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-#include "Slice.h"
+#include "Slice_advanced.h"
 
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-bool useSlice(void);
+bool useSlice_advanced(void);
 
 /*--------------------------------------*\
  |*		Private			*|
@@ -34,7 +34,7 @@ bool useSlice(void);
  |*		Public			*|
  \*-------------------------------------*/
 
-bool useSlice()
+bool useSlice_advanced()
     {
     int n = 1000;
 
@@ -54,8 +54,8 @@ bool useSlice()
 //	dim3 db = dim3(coreMP, 3, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
 //	Grid grid(dg, db);
 
-	Slice slice(grid, n); // on passse la grille à AddVector pour pouvoir facilement la faire varier de l'extérieur (ici) pour trouver l'optimum
-	slice.run();
+	Slice_advanced slice_advanced(grid, n); // on passse la grille à AddVector pour pouvoir facilement la faire varier de l'extérieur (ici) pour trouver l'optimum
+	slice_advanced.run();
 
 	}
 

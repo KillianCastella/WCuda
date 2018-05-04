@@ -3,6 +3,11 @@
 #include "SceneCubeCreator.h"
 
 #include "MandelbrotProvider.h"
+#include "MandelbrotProvider2.h"
+#include "MandelbrotProvider3.h"
+#include "MandelbrotProvider4.h"
+#include "RipplingProvider.h"
+#include "RayTracingProvider.h"
 
 
 /*----------------------------------------------------------------------*\
@@ -51,12 +56,12 @@ SceneCube* SceneCubeCreator::getScene()
 void SceneCubeCreator::createImages()
     {
     ptrImage1 = MandelbrotProvider().createImageGL();
-    ptrImage2 = MandelbrotProvider().createImageGL();
+    ptrImage2 = MandelbrotProvider2().createImageGL();
 
-    ptrImage3 = MandelbrotProvider().createImageGL();
-    ptrImage4 = MandelbrotProvider().createImageGL();
-    ptrImage5 = MandelbrotProvider().createImageGL();
-    ptrImage6 = MandelbrotProvider().createImageGL();
+    ptrImage3 = MandelbrotProvider3().createImageGL();
+    ptrImage4 = MandelbrotProvider4().createImageGL();
+    ptrImage5 = RayTracingProvider().createImageGL();
+    ptrImage6 = RipplingProvider().createImageGL();
     }
 
 void SceneCubeCreator::createScene()
